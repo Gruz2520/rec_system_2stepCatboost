@@ -3,7 +3,7 @@
 
 ### Dataset
 
-![alt text](imgs\image-1.png)
+![alt text](imgs/image-1.png)
 
 *d1* - датасет с данными не за последние *n_weeks_for_catboost* недель(для обучения предмоделей)\
 *d2* - датасет с данными за последние *n_weeks_for_catboost* недель, (для обучения catboost)
@@ -16,7 +16,7 @@
 
 ### Solution
 
-![alt text](imgs\image.png)
+![alt text](imgs/image.png)
 
 В нашем решении используются реализации алгоритмов из библиотеки implicit, которые отличаются скоростью и возможностью распараллелить вычисления на графическом ускорителе.
 
@@ -40,7 +40,7 @@ pip install -r requirements.txt
 python run_solution.py
 ```
 
-Полное решение с комментариями можно найти [туть](). 
+Полное решение с комментариями можно найти [туть](https://github.com/Gruz2520/rec_system_2stepCatboost/blob/main/Team%20Buns.ipynb). 
 
 
 Solution by **Team Buns**
