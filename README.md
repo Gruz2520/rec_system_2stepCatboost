@@ -1,35 +1,35 @@
 ## Introduction
-Комплексное решение через двухэтапную модель для предсказаний рекомендаций. На первом этапе (называемом этапом предмоделей) мы используем ансамбль моделей ALS и BM25 для отбора кандидатов и последующего ранжирования с помощью более сложной модели.
+Complex solution via a two-stage model for recommendation predictions. In the first stage (called the pre-models stage), we use an ensemble of ALS and BM25 models to select candidates and then rank them using a more complex model.
 
 ### Dataset
 
 ![alt text](imgs/image-1.png)
 
-*d1* - датасет с данными не за последние *n_weeks_for_catboost* недель(для обучения предмоделей)\
-*d2* - датасет с данными за последние *n_weeks_for_catboost* недель, (для обучения catboost)
+*d1* - dataset with data from weeks other than the last *n_weeks_for_catboost*(for pre-model training)\.
+*d2* - dataset with data for the last *n_weeks_for_catboost* weeks, (for catboost training).
 
-На этапе создания признаков мы создаем целевые значения для обучения модели и дополнительные признаки на основе исторических данных и разбиваем исходный датасет на три части(при тестировании гипотез и локальной проверки и решения). Среди признаков следует выделить следующие: 
-1. Угол наклона линии тренда(по каждому из дней недели)
-2. Признаки на основе длительности просмотров(90 персентиль, среднее арифметическое, сумма)
+At the feature creation stage, we create target values for model training and additional features based on historical data and split the original dataset into three parts (for hypothesis testing and local testing and decision). The features include the following: 
+1. The slope angle of the trend line (for each of the days of the week)
+2. Signs based on the duration of the views(90 percentile, arithmetic mean, sum)
 
-Мы делаем упор на учет трендов и сезонности, что позволяет нашему решению минимизировать проблему нехватки исторических данных.
+We focus on taking into account trends and seasonality, which allows our solution to minimise the problem of lack of historical data.
 
 ### Solution
 
 ![alt text](imgs/image.png)
 
-В нашем решении используются реализации алгоритмов из библиотеки implicit, которые отличаются скоростью и возможностью распараллелить вычисления на графическом ускорителе.
+Our solution uses implementations of algorithms from the implicit library, which are characterised by their speed and the ability to parallelise computations on a graphics accelerator.
 
-В числе прочего следует отметить разделение пользователей на две группы по количеству просмотров: для одной из них будет использоваться предсказание на основе моделирования, а для другой - на основе эвристик, описанных в классе ColdStart.
+Among other things, we should note the division of users into two groups based on the number of views: one of them will use prediction based on modelling, and the other - based on heuristics described in the ColdStart class.
 
-Второй этап решения - использование градиентного бустинга Catboost для ранжирования кандидатов, полученных из предмоделей. Кандидатам, которые пользователь дейтсвительно посмотрел, ставим label=1, иначе 0. В качестве признаков для катбуста используем информацию о пользователе, фильме и истории их взаимодействий. Для каждого пользователя на X истинных кандидатов случайно сэмплируем по X кандидатов, которые есть только в предсказании и ALS, и BM25
+The second step of the solution is to use Catboost gradient bousting to rank the candidates obtained from the pre-models. Candidates that the user has actually looked at are labelled label=1, otherwise 0. As attributes for catboost we use information about the user, the film and their interaction history. For each user, for X true candidates, we randomly sample X candidates that are only in the prediction of both ALS and BM25
 
-Перед рекомендацией для всех пользователей мы заново обучаем предмодели на всех данных.
+Before recommending for all users, we re-train the pre-models on all data.
 
-Обучающий датасет: [Скачать](https://cloud.gs-labs.tv/s/iagLiCtlMDXmzKf)
+Training dataset: [Download](https://cloud.gs-labs.tv/s/iagLiCtlMDXmzKf)
 
 ### Install & Start
-Все решение разбито на скрипты для модернизации независимых частей решения. Датасет надо распоковать перед запуском.
+The whole solution is broken into scripts to modernise independent parts of the solution. The dataset must be unzipped before running.
 
 ```bash
 git clone 
@@ -40,8 +40,7 @@ pip install -r requirements.txt
 python run_solution.py
 ```
 
-Полное решение с комментариями можно найти [туть](https://github.com/Gruz2520/rec_system_2stepCatboost/blob/main/Team%20Buns.ipynb). 
-
+The full solution in notebook with comments can be found [there](https://github.com/Gruz2520/rec_system_2stepCatboost/blob/main/Team%20Buns.ipynb). 
 
 Solution by **Team Buns**
 
